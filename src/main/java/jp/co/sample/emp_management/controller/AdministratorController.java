@@ -80,11 +80,18 @@ public class AdministratorController {
 			return toInsert();
 		}
 		
-		Administrator administrator = new Administrator();
-		// フォームからドメインにプロパティ値をコピー
-		BeanUtils.copyProperties(form, administrator);
-		administratorService.insert(administrator);
-		return "redirect:/";
+		Administrator admin = administratorService.findByMaiAdministrator(form.getMailAddress());
+		
+		if(admin != null) {
+			model.addAttribute("errormassege","このメールアドレスは既に登録されています");
+			return "/administrator/insert";
+		} else {
+			Administrator administrator = new Administrator();
+			// フォームからドメインにプロパティ値をコピー
+			BeanUtils.copyProperties(form, administrator);
+			administratorService.insert(administrator);
+			return "redirect:/";
+		}
 	}
 
 	/////////////////////////////////////////////////////
