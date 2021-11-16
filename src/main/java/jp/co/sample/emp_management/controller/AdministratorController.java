@@ -128,6 +128,8 @@ public class AdministratorController {
 			model.addAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
 			return toLogin();
 		}
+		
+		session.setAttribute("name",administrator.getName());
 		return "forward:/employee/showList";
 	}
 	
