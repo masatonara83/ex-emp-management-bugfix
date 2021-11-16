@@ -80,7 +80,7 @@ public class AdministratorController {
 			return toInsert();
 		}
 		
-		Administrator admin = administratorService.findByMaiAdministrator(form.getMailAddress());
+		Administrator admin = administratorService.findByMailAddress(form.getMailAddress());
 		
 		if(admin != null) {
 			model.addAttribute("errormassege","このメールアドレスは既に登録されています");

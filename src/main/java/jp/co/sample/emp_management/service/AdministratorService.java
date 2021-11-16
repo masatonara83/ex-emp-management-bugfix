@@ -40,7 +40,7 @@ public class AdministratorService {
 		return administrator;
 	}
 	
-	public Administrator findByMaiAdministrator(String mailAddress) {
+	public Administrator findByMailAddress(String mailAddress) {
 		Administrator administrator = administratorRepository.findByMailAddress(mailAddress);
 		return administrator;
 	}
