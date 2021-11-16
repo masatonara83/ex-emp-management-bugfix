@@ -103,7 +103,7 @@
 							      入社日
 							    </th>
 							    <td>
-							      <span th:text="${employee.hireDate}">2012/11/29</span>
+							      <span th:text="${#dates.format(employee.hireDate, 'YYYY年MM月dd日')}">2012/11/29</span>
 							    </td>
 							  </tr>
 							  <tr>
