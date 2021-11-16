@@ -84,7 +84,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<span th:if="${passwordError != null}" th:text="${passwordError}" style="color:red"></span><br>
-										<label for="password">
+										<label for="checkPassword">
 											パスワード確認用:
 										</label>
 										<label th:if="${#fields.hasErrors('checkPassword')}" th:errors="*{checkPassword}" class="error-messages">
