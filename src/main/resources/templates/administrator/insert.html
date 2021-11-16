@@ -53,8 +53,7 @@
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
-										<span th:if="${errormassege == null}" th:text="${errormassege}" style="color:red"></span>
-										<span th:unless="${errormassege == null}" th:text="${errormassege}" style="color:red"></span><br>
+										<span th:if="${errormassege != null}" th:text="${errormassege}" style="color:red"></span><br>
 										<label for="mailAddress">
 											メールアドレス:
 										</label>
