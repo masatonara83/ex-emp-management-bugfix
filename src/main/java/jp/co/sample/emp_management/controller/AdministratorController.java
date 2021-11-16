@@ -78,7 +78,7 @@ public class AdministratorController {
 		
 		if(result.hasErrors()) {
 			return toInsert();
-
+		}
 		//パスワードと確認パスワードの確認メゾット
 		if(!form.getPassword().equals(form.getCheckPassword())) { //パスワードが一致しなければ戻す
 			model.addAttribute("passwordError", "パスワードが一致しません");
