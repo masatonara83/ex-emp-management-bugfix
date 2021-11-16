@@ -45,7 +45,7 @@
 											氏名を入力してください
 										</label>
 										<input type="text" name="name" id="name" class="form-control" placeholder="山田太郎"
-											 th:field="*{name}" th:errorclass="error-input" value="山田太郎">
+											 th:field="*{name}" th:errorclass="error-input" value="山田太郎" th:value="${name}">
 									</div>
 								</div>
 							</div>
@@ -60,7 +60,7 @@
 											メールアドレスを入力してください
 										</label>
 										<input type="text" name="mailAddress" id="mailAddress" class="form-control" placeholder="yamada@mail.com"
-											 th:field="*{mailAddress}" th:errorclass="error-input" value="yamada@mail.com">
+											 th:field="*{mailAddress}" th:errorclass="error-input" value="yamada@mail.com" th:value="${mailAddress}">
 									</div>
 								</div>
 							</div>
