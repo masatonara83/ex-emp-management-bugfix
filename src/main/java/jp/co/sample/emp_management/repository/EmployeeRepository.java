@@ -56,6 +56,25 @@ public class EmployeeRepository {
 
 		return developmentList;
 	}
+	
+	/**
+	 * 従業員の名前検索を行う
+	 * 
+	 * @param name　検索する名前の一部
+	 * @return 従業員検索結果を返す
+	 */
+	public List<Employee> findByName(String name){
+		
+		String sql = "SELECT * FROM employees WHERE name LIKE :name ORDER BY hire_date DESC;";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("name", "%" + name + "%");
+		List<Employee> emploList = template.query(sql, param, EMPLOYEE_ROW_MAPPER);
+		
+		//もし検索結果が一つもなければnullで返す
+		if(emploList.size() == 0) {
+			return null;
+		}
+		return emploList;
+	}
 
 	/**
 	 * 主キーから従業員情報を取得します.

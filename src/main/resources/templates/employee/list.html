@@ -50,10 +50,16 @@
 			<!-- /.container-fluid -->
 		</nav>
 		
+		<form th:action="@{/employee/search}" th:object="${searchByNameForm}">
+			<label for="searchField">名前検索：</label><input id="searchField" type="text" name="name">
+			<button class="btn btn-success">検索</button>
+		</form>
+		
 		<!-- パンくずリスト -->
 		<ol class="breadcrumb">
 			<li class="active"><a href="list.html" th:href="@{/employee/showList}">従業員リスト</a></li>
 		</ol>
+		<span th:if="${notEmployee != null}" th:text="${notEmployee}"></span>
 
 		<!-- table -->
 		<div class="row">
@@ -63,7 +69,7 @@
 <!-- ここから上を編集する必要はありません -->
 
 <!-- ここにモックのtable要素を貼り付けます -->
-
+				
 				<table class="table table-striped">
 					<thead>
 						<tr>
