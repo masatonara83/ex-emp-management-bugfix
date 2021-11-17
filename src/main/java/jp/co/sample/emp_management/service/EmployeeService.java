@@ -54,6 +54,12 @@ public class EmployeeService {
 	}
 	
 	public List<Employee> findByName(String name){
+		//引数が空文字ならfindAll()を呼んで返す
+		if(name == null) {
+			List<Employee> employeeList = employeeRepository.findAll();
+			return employeeList;
+		}
+		
 		return employeeRepository.findByName(name);
 	}
 }

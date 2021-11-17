@@ -1,4 +1,4 @@
-package jp.co.sample.emp_management.controller;
+package jp.co.sample.emp_management.common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
  * アプリケーション内で処理されなかった例外をここでキャッチし、
  * エラーページへ遷移させます.
  * 
- * @author igamasayuki
+ * @author naramasato
  *
  */
 @Component

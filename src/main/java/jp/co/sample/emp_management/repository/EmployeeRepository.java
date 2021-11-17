@@ -65,12 +65,6 @@ public class EmployeeRepository {
 	 */
 	public List<Employee> findByName(String name){
 		
-		//引数が空文字ならfindAll()を呼んで返す
-		if(name == null) {
-			List<Employee> employeeList = findAll();
-			return employeeList;
-		}
-		
 		String sql = "SELECT * FROM employees WHERE name LIKE :name ORDER BY hire_date DESC;";
 		SqlParameterSource param = new MapSqlParameterSource().addValue("name", "%" + name + "%");
 		List<Employee> emploList = template.query(sql, param, EMPLOYEE_ROW_MAPPER);
