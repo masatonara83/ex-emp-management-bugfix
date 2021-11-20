@@ -29,7 +29,7 @@
 					</button>
 					<a class="navbar-brand" href="list.html" th:href="@{/employee/showList}"> 
 						<!-- 企業ロゴ -->
-						<img src="../../static/img/header_logo_small.png" th:src="@{/img/header_logo_small.png}">
+						<img src="/../static/img/header_logo_small.png" th:src="@{/img/header_logo_small.png}">
 					</a>
 				</div>
 
@@ -38,6 +38,7 @@
 					id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
 						<li class="active"><a href="list.html" th:href="@{/employee/showList}">従業員管理</a></li>
+						<li class="active"><a href="insert.html" th:href="@{/employee/insert}">従業員登録</a></li>
 					</ul>
 					<p class="navbar-text navbar-right">
 					   <span th:text="${session.name}">山田太郎</span>さんこんにちは！
@@ -87,7 +88,7 @@
 							      写真
 							    </th>
 							    <td>
-							      <img src="../../static/img/e2.png" th:src="${'/img/' + employee.image}" />
+							      <img src="../../static/img/e2.png" th:src="${employee.image}" />
 							    </td>
 							  </tr>
 							  <tr>

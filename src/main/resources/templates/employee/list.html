@@ -38,6 +38,7 @@
 					id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
 						<li class="active"><a href="list.html" th:href="@{/employee/showList}">従業員管理</a></li>
+						<li class="active"><a href="insert.html" th:href="@{/employee/insert}">従業員登録</a></li>
 					</ul>
 					<p class="navbar-text navbar-right">
 						<span th:text="${session.name}">山田太郎</span>さんこんにちは！
@@ -51,7 +52,10 @@
 		</nav>
 		
 		<form th:action="@{/employee/search}" th:object="${searchByNameForm}">
-			<label for="searchField">名前検索：</label><input id="searchField" type="text" name="name">
+			<label for="searchField">名前検索：</label><input id="searchField" type="text" name="name" autocomplete="name" list="employeeList">
+			<datalist id="employeeList">
+				<option th:each="employee:${employeeList}" th:value="${employee.name}"></option>
+			</datalist>
 			<button class="btn btn-success">検索</button>
 		</form>
 		

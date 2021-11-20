@@ -1,12 +1,16 @@
 package jp.co.sample.emp_management.service;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jp.co.sample.emp_management.domain.Employee;
+import jp.co.sample.emp_management.form.InsertEmployeeForm;
 import jp.co.sample.emp_management.repository.EmployeeRepository;
 
 /**
@@ -61,5 +65,31 @@ public class EmployeeService {
 		}
 		
 		return employeeRepository.findByName(name);
+	}
+	
+	public void insertEmployee(InsertEmployeeForm form, String fileExtension) throws IOException {
+		
+		Employee employee = new Employee();
+		BeanUtils.copyProperties(form, employee);
+		
+		//画像ファイルをBase64形式にエンコード
+		String base64File = Base64.getEncoder().encodeToString(form.getImage().getBytes());
+		if("jpg".equals(fileExtension)) {
+			base64File = "data:image/jpag;base64," + base64File;
+		} else if("png".equals(fileExtension)) {
+			base64File = "data:image/png;base64";
+		}
+		//imageにセット
+		employee.setImage(base64File);
+		//入社日をセット
+		employee.setHireDate(form.getDateHireDate());
+		//給料をint型にキャストしてセット
+		employee.setSalary(form.getIntSalary());
+		//扶養人数をint型にキャストしてセット
+		employee.setDependentsCount(form.getIntDependentCount());
+		//住所（県名・番地を）address一つに変換してセット
+		employee.setAddress(form.getAddress());
+		
+		employeeRepository.insertEmployee(employee);
 	}
 }

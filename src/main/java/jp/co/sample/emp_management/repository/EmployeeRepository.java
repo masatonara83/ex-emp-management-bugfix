@@ -92,6 +92,15 @@ public class EmployeeRepository {
 
 		return development;
 	}
+	
+	public void insertEmployee(Employee employee) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(employee);
+		
+		String insertSql = "INSERT INTO employees(id, name, image, gender, hire_date, mail_address, zip_code, address, telephone, salary, characteristics, dependents_count) SELECT "
+				+ "MAX(id) +1, :name, :image, :gender, :hireDate, :mailAddress, :zipCode, :address, :telephone, :salary, :characteristics, :dependentsCount FROM employees;";
+		
+		template.update(insertSql, param);
+	}
 
 	/**
 	 * 従業員情報を変更します.

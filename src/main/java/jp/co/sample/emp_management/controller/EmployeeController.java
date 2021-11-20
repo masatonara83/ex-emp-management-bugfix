@@ -1,7 +1,21 @@
 package jp.co.sample.emp_management.controller;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,8 +23,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import jp.co.sample.emp_management.domain.Employee;
+import jp.co.sample.emp_management.form.InsertEmployeeForm;
 import jp.co.sample.emp_management.form.SearchByNameForm;
 import jp.co.sample.emp_management.form.UpdateEmployeeForm;
 import jp.co.sample.emp_management.service.EmployeeService;
@@ -41,6 +57,11 @@ public class EmployeeController {
 	@ModelAttribute
 	public SearchByNameForm setUpSearchForm() {
 		return new SearchByNameForm();
+	}
+	
+	@ModelAttribute
+	public InsertEmployeeForm setInsertEmployeeForm() {
+		return new InsertEmployeeForm();
 	}
 
 	/////////////////////////////////////////////////////
@@ -118,5 +139,71 @@ public class EmployeeController {
 		
 		model.addAttribute("employeeList",employeeList);
 		return "/employee/list";
+	}
+	
+	@RequestMapping("insert")
+	public String insert() {
+		return "/employee/insert";
+	}
+	
+	@RequestMapping("toInsert")
+	public String insertEmployee(@Validated InsertEmployeeForm form, BindingResult result, Model model) throws IOException {
+		
+		//LocalDateTime date = LocalDateTime.now();
+		
+		
+		
+		//模範解答
+		MultipartFile multiFile = form.getImage();
+		String fileExtension = null;
+		
+		//画像ファイル形式チェック
+		try {
+			fileExtension = getExtension(multiFile.getOriginalFilename());
+			
+			if(!"jpg".equals(fileExtension) && !"png".equals(fileExtension)) {
+				result.rejectValue("image","", "拡張子は.jpgか.pngのみに対応しています");
+			}
+		} catch (Exception e) {
+			result.rejectValue("image", "", "拡張子は.jpgか.pngのみに対応しています");
+		}
+		
+		employeeService.insertEmployee(form, fileExtension);
+		
+
+		//自分が記載したコード
+//		String fileName = multiFile.getOriginalFilename();
+//		File filepath = new File("src/main/resources/static/img/" + fileName);
+//		try {
+//			byte[] bytes = multiFile.getBytes();
+//			FileOutputStream stream = new FileOutputStream(filepath.toString());
+//			stream.write(bytes);
+//			stream.close();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		
+//		Employee employee = new Employee();
+//		BeanUtils.copyProperties(form, employee);
+//		employee.setImage(fileName);
+//		employee.setHireDate(form.getDateHireDate());
+//		employee.setSalary(form.getIntSalary());
+//		employee.setDependentsCount(form.getIntDependentCount());
+//		employee.setAddress(form.getAddress());
+//		
+//		employeeService.insertEmployee(employee);
+		
+		return "redirect:/employee/showList";
+	}
+	
+	private String getExtension(String originalFileName) throws Exception {
+		if(originalFileName == null) {
+			throw new FileNotFoundException();
+		}
+		int point = originalFileName.lastIndexOf(".");
+		if(point == -1) {
+			throw new FileNotFoundException();
+		}
+		return originalFileName.substring(point + 1);
 	}
 }
