@@ -12,11 +12,13 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
-
+import java.util.stream.Stream;import org.hibernate.validator.internal.constraintvalidators.bv.notempty.NotEmptyValidatorForArraysOfLong;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,6 +45,9 @@ public class EmployeeController {
 
 	@Autowired
 	private EmployeeService employeeService;
+	
+	// 1ページに表示する従業員数は10名
+	private static final int VIEW_SIZE = 10;
 	
 	/**
 	 * 使用するフォームオブジェクトをリクエストスコープに格納する.
@@ -71,13 +76,53 @@ public class EmployeeController {
 	 * 従業員一覧画面を出力します.
 	 * 
 	 * @param model モデル
+	 * @param page 出力したいページ数
+	 * @param loginAdministrator ログイン情報をコントローラで取得
 	 * @return 従業員一覧画面
 	 */
 	@RequestMapping("/showList")
-	public String showList(Model model) {
+	public String showList(Model model, Integer page) {
+		
+		System.out.println(page);
+		// ページング機能追加
+		if(page == null) {
+			//ページ数の指定がない場合は１ページ目を表示する
+			page = 1;
+		}
+		
 		List<Employee> employeeList = employeeService.showList();
-		model.addAttribute("employeeList", employeeList);
+		// ページング機能追加のためコメントアウト
+		// model.addAttribute("employeeList", employeeList);
+		
+		//表示させたいページ数、ページサイズ、従業員リストを渡し１ページに表示させる従業員リストを絞り込み
+		Page<Employee> employeePage = employeeService.showListPaging(page, VIEW_SIZE, employeeList);
+		model.addAttribute("employeePage", employeePage);
+		
+		// ページングのリンクに使うページ数をスコープに格納 (例)28件あり1ページにつき10件表示させる場合→1,2,3がpageNumbersに入る
+		List<Integer> pageNumbers = calcPageNumbers(model, employeePage);
+		model.addAttribute("pageNumbers",pageNumbers);
+		
+		// オートコンプリート用にJavaScriptの配列の中身を文字列で作ってスコープへ格納
+		
 		return "employee/list";
+	}
+	
+	/**
+	 * ページングのリンクに使うページ数をスコープに格納 (例)28件あり1ページにつき10件表示させる場合→1,2,3がpageNumbersに入る
+	 * 
+	 * @param model        モデル
+	 * @param employeePage ページング情報
+	 */
+	private List<Integer> calcPageNumbers(Model model, Page<Employee> employeePage){
+		int totalPages = employeePage.getTotalPages();
+		List<Integer> pageNumbers = null;
+		if(totalPages > 0) {
+			pageNumbers = new ArrayList<Integer>();
+			for(int i = 1; i < totalPages; i++) {
+				pageNumbers.add(i);
+			}
+		}
+		return pageNumbers;
 	}
 
 	

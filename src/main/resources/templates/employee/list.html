@@ -83,7 +83,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="employee : ${employeeList}">
+						<tr th:each="employee : ${employeePage.content}">
 							<td>
 								<a href="detail.html" th:href="@{'/employee/showDetail?id=' + ${employee.id}}">
 									<span th:text="${employee.name}">山田太郎</span>
@@ -98,6 +98,13 @@
 						</tr>
 					</tbody>
 				</table>
+				
+				<div th:if="${employeePage.totalPages > 0}" class="pagination"
+					th:each="pageNumber : ${pageNumbers}">
+					<a th:href="@{/employee/showList(size=${employeePage.size}, page=${pageNumber})}"
+						th:text=${pageNumber}
+					    th:class="${pageNumber==employeePage.number + 1} ? active"></a>
+				</div>
 
 
 <!-- ここから下を編集する必要はありません -->
@@ -109,6 +116,6 @@
 	
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script src="../../static/js/bootstrap.min.js"></script>
+	<script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 </body>
 </html>
