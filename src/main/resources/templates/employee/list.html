@@ -38,9 +38,10 @@
 					id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
 						<li class="active"><a href="list.html" th:href="@{/employee/showList}">従業員管理</a></li>
+						<li class="active"><a href="insert.html" th:href="@{/employee/insert}">従業員登録</a></li>
 					</ul>
 					<p class="navbar-text navbar-right">
-						<span th:text="${administratorName}">山田太郎</span>さんこんにちは！
+						<span th:text="${session.name}">山田太郎</span>さんこんにちは！
 						&nbsp;&nbsp;&nbsp;
 						<a href="../administrator/login.html" class="navbar-link" th:href="@{/logout}">ログアウト</a>
 					</p>
@@ -50,10 +51,19 @@
 			<!-- /.container-fluid -->
 		</nav>
 		
+		<form th:action="@{/employee/search}" th:object="${searchByNameForm}">
+			<label for="searchField">名前検索：</label><input id="searchField" type="text" name="name" autocomplete="name" list="employeeList">
+			<datalist id="employeeList">
+				<option th:each="employee:${employeeList}" th:value="${employee.name}"></option>
+			</datalist>
+			<button class="btn btn-success">検索</button>
+		</form>
+		
 		<!-- パンくずリスト -->
 		<ol class="breadcrumb">
 			<li class="active"><a href="list.html" th:href="@{/employee/showList}">従業員リスト</a></li>
 		</ol>
+		<span th:if="${notEmployee != null}" th:text="${notEmployee}"></span>
 
 		<!-- table -->
 		<div class="row">
@@ -63,7 +73,7 @@
 <!-- ここから上を編集する必要はありません -->
 
 <!-- ここにモックのtable要素を貼り付けます -->
-
+				
 				<table class="table table-striped">
 					<thead>
 						<tr>
@@ -73,14 +83,14 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="employee : ${employeeList}">
+						<tr th:each="employee : ${employeePage.content}">
 							<td>
 								<a href="detail.html" th:href="@{'/employee/showDetail?id=' + ${employee.id}}">
 									<span th:text="${employee.name}">山田太郎</span>
 								</a>
 							</td>
 							<td>
-								<span th:text="${employee.hireDate}">2016/12/1</span>
+								<span th:text="${#dates.format(employee.hireDate, 'yyyy年MM月dd日')}">2016/12/1</span>
 							</td>
 							<td>
 								<span th:text="${employee.dependentsCount} + '人'">3人</span>
@@ -88,6 +98,13 @@
 						</tr>
 					</tbody>
 				</table>
+				
+				<div th:if="${employeePage.totalPages > 0}" class="pagination"
+					th:each="pageNumber : ${pageNumbers}">
+					<a th:href="@{/employee/showList(size=${employeePage.size}, page=${pageNumber})}"
+						th:text=${pageNumber}
+					    th:class="${pageNumber==employeePage.number + 1} ? active"></a>
+				</div>
 
 
 <!-- ここから下を編集する必要はありません -->
@@ -99,6 +116,6 @@
 	
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script src="../../static/js/bootstrap.min.js"></script>
+	<script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 </body>
 </html>

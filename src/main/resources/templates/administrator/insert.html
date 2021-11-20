@@ -45,7 +45,7 @@
 											氏名を入力してください
 										</label>
 										<input type="text" name="name" id="name" class="form-control" placeholder="山田太郎"
-											 th:field="*{name}" th:errorclass="error-input" value="山田太郎">
+											 th:field="*{name}" th:errorclass="error-input" value="山田太郎" th:value="${name}">
 									</div>
 								</div>
 							</div>
@@ -53,6 +53,7 @@
 							<div class="form-group">
 								<div class="row">
 									<div class="col-sm-12">
+										<span th:if="${errormassege != null}" th:text="${errormassege}" style="color:red"></span><br>
 										<label for="mailAddress">
 											メールアドレス:
 										</label>
@@ -60,7 +61,7 @@
 											メールアドレスを入力してください
 										</label>
 										<input type="text" name="mailAddress" id="mailAddress" class="form-control" placeholder="yamada@mail.com"
-											 th:field="*{mailAddress}" th:errorclass="error-input" value="yamada@mail.com">
+											 th:field="*{mailAddress}" th:errorclass="error-input" value="yamada@mail.com" th:value="${mailAddress}">
 									</div>
 								</div>
 							</div>
@@ -76,6 +77,21 @@
 										</label>
 										<input type="password" name="password" id="password" class="form-control" placeholder="password"
 											 th:field="*{password}" th:errorclass="error-input" value="xxxxxxxx">
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<span th:if="${passwordError != null}" th:text="${passwordError}" style="color:red"></span><br>
+										<label for="checkPassword">
+											パスワード確認用:
+										</label>
+										<label th:if="${#fields.hasErrors('checkPassword')}" th:errors="*{checkPassword}" class="error-messages">
+											パスワードを入力してください
+										</label>
+										<input type="password" name="checkPassword" id="checkPassword" class="form-control" placeholder="password"
+											 th:field="*{checkPassword}" th:errorclass="error-input" value="xxxxxxxx">
 									</div>
 								</div>
 							</div>

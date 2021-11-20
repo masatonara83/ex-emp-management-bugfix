@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -72,12 +73,30 @@ public class AdministratorController {
 	 * @return ログイン画面へリダイレクト
 	 */
 	@RequestMapping("/insert")
-	public String insert(InsertAdministratorForm form) {
-		Administrator administrator = new Administrator();
-		// フォームからドメインにプロパティ値をコピー
-		BeanUtils.copyProperties(form, administrator);
-		administratorService.insert(administrator);
-		return "employee/list";
+	public String insert(@Validated InsertAdministratorForm form,
+			BindingResult result, Model model) {
+		
+		if(result.hasErrors()) {
+			return toInsert();
+		}
+		//パスワードと確認パスワードの確認メゾット
+		if(!form.getPassword().equals(form.getCheckPassword())) { //パスワードが一致しなければ戻す
+			model.addAttribute("passwordError", "パスワードが一致しません");
+			return "/administrator/insert";
+		}
+		
+		Administrator admin = administratorService.findByMailAddress(form.getMailAddress());
+		
+		if(admin != null) {
+			model.addAttribute("errormassege","このメールアドレスは既に登録されています");
+			return "/administrator/insert";
+		} else {
+			Administrator administrator = new Administrator();
+			// フォームからドメインにプロパティ値をコピー
+			BeanUtils.copyProperties(form, administrator);
+			administratorService.insert(administrator);
+			return "redirect:/";
+		}
 	}
 
 	/////////////////////////////////////////////////////
@@ -109,6 +128,8 @@ public class AdministratorController {
 			model.addAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
 			return toLogin();
 		}
+		
+		session.setAttribute("name",administrator.getName());
 		return "forward:/employee/showList";
 	}
 	

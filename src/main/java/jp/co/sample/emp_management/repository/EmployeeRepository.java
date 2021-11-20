@@ -50,11 +50,30 @@ public class EmployeeRepository {
 	 * @return 全従業員一覧 従業員が存在しない場合はサイズ0件の従業員一覧を返します
 	 */
 	public List<Employee> findAll() {
-		String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count FROM employees";
+		String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count FROM employees ORDER BY  hire_date DESC";
 
 		List<Employee> developmentList = template.query(sql, EMPLOYEE_ROW_MAPPER);
 
 		return developmentList;
+	}
+	
+	/**
+	 * 従業員の名前検索を行う
+	 * 
+	 * @param name　検索する名前の一部
+	 * @return 従業員検索結果を返す
+	 */
+	public List<Employee> findByName(String name){
+		
+		String sql = "SELECT * FROM employees WHERE name LIKE :name ORDER BY hire_date DESC;";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("name", "%" + name + "%");
+		List<Employee> emploList = template.query(sql, param, EMPLOYEE_ROW_MAPPER);
+		
+		//もし検索結果が一つもなければnullで返す
+		if(emploList.size() == 0) {
+			return null;
+		}
+		return emploList;
 	}
 
 	/**
@@ -72,6 +91,15 @@ public class EmployeeRepository {
 		Employee development = template.queryForObject(sql, param, EMPLOYEE_ROW_MAPPER);
 
 		return development;
+	}
+	
+	public void insertEmployee(Employee employee) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(employee);
+		
+		String insertSql = "INSERT INTO employees(id, name, image, gender, hire_date, mail_address, zip_code, address, telephone, salary, characteristics, dependents_count) SELECT "
+				+ "MAX(id) +1, :name, :image, :gender, :hireDate, :mailAddress, :zipCode, :address, :telephone, :salary, :characteristics, :dependentsCount FROM employees;";
+		
+		template.update(insertSql, param);
 	}
 
 	/**
